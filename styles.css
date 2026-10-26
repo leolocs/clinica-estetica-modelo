@@ -636,7 +636,7 @@ body { font-size: 16px; }
   html { scroll-padding-top: 82px; }
   .site-header { position: fixed; }
   .header-inner { width: calc(100% - 30px); justify-content: space-between; }
-  .site-header.is-scrolled .brand-name strong { color: var(--bark); }
+  .site-header.is-scrolled .brand-name strong { color: var(--bark);   }
   .hero h1, .hero h2 { font-size: clamp(45px, 11.5vw, 58px); }
   .section h2 { font-size: clamp(38px, 9vw, 51px); }
   .eyebrow { font-size: 10px; }
@@ -819,3 +819,47 @@ main > section:not(.hero) {
 .whatsapp-cta { display: inline-flex; align-items: center; gap: 8px; }
 .button.whatsapp-cta, .header-cta.whatsapp-cta { gap: 8px; }
 .whatsapp-cta-icon { width: 16px; height: 16px; flex: 0 0 auto; }
+
+@media (max-width: 1100px) {
+  .header-inner { height: 72px; justify-content: space-between; }
+  .desktop-nav, .header-cta { display: none; }
+  .menu-toggle { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid rgba(250,247,241,.65); border-radius: 50%; color: var(--paper); background: rgba(30,27,23,.08); cursor: pointer; }
+  .menu-toggle-icon { width: 20px; height: 20px; }
+  .menu-toggle-icon-close { display: none; }
+  .menu-toggle[aria-expanded="true"] .menu-toggle-icon-menu { display: none; }
+  .menu-toggle[aria-expanded="true"] .menu-toggle-icon-close { display: block; }
+  .site-header.is-scrolled .menu-toggle { border-color: rgba(83, 66, 56, .45); color: var(--bark); background: transparent; }
+  .mobile-menu {
+    position: absolute;
+    inset: 100% 15px auto;
+    z-index: 25;
+    max-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 12px;
+    padding: 0 20px;
+    color: var(--paper);
+    background: #463930;
+    box-shadow: 0 12px 32px rgba(32, 25, 20, .28);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    visibility: hidden;
+    transition: max-height .32s ease, opacity .22s ease, padding .32s ease, transform .32s ease, visibility 0s linear .32s;
+  }
+  .mobile-menu.is-open {
+    max-height: calc(100svh - 88px);
+    overflow-y: auto;
+    padding-block: 16px 22px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    visibility: visible;
+    transition: max-height .32s ease, opacity .22s ease, padding .32s ease, transform .32s ease, visibility 0s;
+  }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu-top { margin-bottom: 10px; }
+  .mobile-menu nav a { min-height: 52px; }
+  .mobile-menu-cta { margin-top: 22px; }
+}

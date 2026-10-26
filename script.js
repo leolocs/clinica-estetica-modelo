@@ -3,29 +3,44 @@
 
   const menu = document.querySelector("#mobile-menu");
   const menuToggle = document.querySelector(".menu-toggle");
-  const menuClose = document.querySelector(".menu-close");
+  let menuCloseTimer;
+  let menuAnimationFrame;
 
   function setMenuOpen(isOpen) {
     if (!menu || !menuToggle) return;
-    menu.hidden = !isOpen;
+    window.clearTimeout(menuCloseTimer);
+    window.cancelAnimationFrame(menuAnimationFrame);
     menuToggle.setAttribute("aria-expanded", String(isOpen));
     menuToggle.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
     document.body.classList.toggle("menu-open", isOpen);
-    if (isOpen) menuClose?.focus();
-    else menuToggle.focus();
+    menu.inert = !isOpen;
+    if (isOpen) {
+      menu.hidden = false;
+      menuAnimationFrame = window.requestAnimationFrame(() => {
+        if (menuToggle.getAttribute("aria-expanded") === "true") {
+          menu.classList.add("is-open");
+        }
+      });
+    } else {
+      menu.classList.remove("is-open");
+      menuCloseTimer = window.setTimeout(() => {
+        if (menuToggle.getAttribute("aria-expanded") !== "true") menu.hidden = true;
+      }, 350);
+      menuToggle.focus();
+    }
   }
 
   menuToggle?.addEventListener("click", () => {
     setMenuOpen(menuToggle.getAttribute("aria-expanded") !== "true");
   });
-  menuClose?.addEventListener("click", () => setMenuOpen(false));
   menu?.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setMenuOpen(false));
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && menu && !menu.hidden) setMenuOpen(false);
-    if (event.key === "Tab" && menu && !menu.hidden) {
-      const focusable = [...menu.querySelectorAll('a[href], button:not([disabled])')]
+    const isMenuOpen = menuToggle?.getAttribute("aria-expanded") === "true";
+    if (event.key === "Escape" && isMenuOpen) setMenuOpen(false);
+    if (event.key === "Tab" && isMenuOpen && menu && menuToggle) {
+      const focusable = [menuToggle, ...menu.querySelectorAll('a[href], button:not([disabled])')]
         .filter((element) => element.offsetParent !== null);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
